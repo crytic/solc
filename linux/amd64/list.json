@@ -3,67 +3,67 @@
     {
       "name": "solc-v0.4.10",
       "version": "0.4.10",
-      "keccak256": "0x13533ef1ddbeea1ae66820f55cbdbd6fc1bb409b0edf9c4e75e6d43d3943c129",
+      "keccak256": "0xcc42d9a1fc69a30c31a6e7279d0d7c2fcc2cfab1accf3a347637654d4e5b07e5",
       "sha256": "0x4a03cdae688434a278b067c8e468f16995f01fc0dcca45b3ab8f7a61ab1788a7"
     },
     {
       "name": "solc-v0.4.9",
       "version": "0.4.9",
-      "keccak256": "0x1136b7340b6c7000d51acc87ff13ed780c627ce63e080c28a7abe27a02067108",
+      "keccak256": "0x2b1c8b5a1835409570edf44549198b2000e6017ee1dc08b1ec747319e885209c",
       "sha256": "0x71da154585e0c9048445b39b3662b421d20814cc68482b6b072aae2e541a4c74"
     },
     {
       "name": "solc-v0.4.8",
       "version": "0.4.8",
-      "keccak256": "0x57b6dad4af83e4f7993664e27157f0014c4bb5731d90b84d502d5846b8b94155",
+      "keccak256": "0x9d2add4ed0a0f1ba27dc9409e6ed76c8f65b40087e0f555214decfa33350aadc",
       "sha256": "0xee76039f933938cb5c14bf3fc4754776aa3e5c4c88420413da4c0c13731b8ffe"
     },
     {
       "name": "solc-v0.4.7",
       "version": "0.4.7",
-      "keccak256": "0x753032b3de83518f4a73b721b22752a6404b7a769e438d855d2c56c83328f8ce",
+      "keccak256": "0xed77274db54ae0e60f07440b818192298ceaaf8403bb3594f2589e58839a7c4e",
       "sha256": "0xe1affb6e13dee7b14039f8eb1a52343f5fdc56169023e0f7fc339dfc25ad2b3d"
     },
     {
       "name": "solc-v0.4.6",
       "version": "0.4.6",
-      "keccak256": "0xb2a826f91dd80c3df3ec0d31eaff20a7b17f201949dc5a1ec71207b04741627a",
+      "keccak256": "0xf05453ef3654064e15664afc1be859ab5ce6c404c5d24be0a31fc2b362ad9f98",
       "sha256": "0x0525d7b95549db6c913edb3c1b0c26d2db81e64b03f8352261df1b2ad696a65e"
     },
     {
       "name": "solc-v0.4.5",
       "version": "0.4.5",
-      "keccak256": "0x5a898a70b533b01c2132e7b3a4363fe701a5324bb28bfddbb5bc13e1ec0a2c4e",
+      "keccak256": "0x6e1e8d0d95bd03938771f1a4ab1ecc985f449fa5cc96ab47792be7988b48a88f",
       "sha256": "0x6f46ab7747d7de1b75907e539e6e19be201680e64ce99b583c6356e4e7897406"
     },
     {
       "name": "solc-v0.4.4",
       "version": "0.4.4",
-      "keccak256": "0xdeb7901fd17f71e91e53c1f8652ffc49a15fb9e3db435d26e03ff851a6bccdd8",
+      "keccak256": "0x7c1711163f2734db7398b4d08d4bb47d8b11cfd15c7ec03eb6814050bac1854f",
       "sha256": "0x25d148e9c1052631a930bfbe8e4e3d9dae8de7659f8d3ea659a3ef139cd5e2c9"
     },
     {
       "name": "solc-v0.4.3",
       "version": "0.4.3",
-      "keccak256": "0x8107fe6d47071925bebe14c0f67d3d55def5837199a4b2b8412af78c04d496d6",
+      "keccak256": "0x025bf20bdd9beac710446bad627d85e7f988ff93732f4e72c541af50d0fa2fdd",
       "sha256": "0x1dc7ef0b4aab472299e77b39c7465cd5ed4609a759b52ce1a93f2d54395da73a"
     },
     {
       "name": "solc-v0.4.2",
       "version": "0.4.2",
-      "keccak256": "0x501b63bcda453f5573ff52e60531596a18c562da28a063ba629c17ce9efe5a62",
+      "keccak256": "0x2529ace47f26c5fca1c1b61b5d2de4f2a2430c1c5ca53fdd5e5f3864fc153e37",
       "sha256": "0x891d0b2d3a636ff40924802a6f5beb1ecbc42d5d0d0bfecbbb148b561c861fb9"
     },
     {
       "name": "solc-v0.4.1",
       "version": "0.4.1",
-      "keccak256": "0x0b9f99c41e7c6ef8fa57a97c380778da69c350d2d246eebc2f3398a82f4f401b",
+      "keccak256": "0x9a65bfddc2a493cf5bff990c1ab27417c2c6efaa9fee9d9831ea70a0d104b144",
       "sha256": "0xa0c06d0c6a14c66ddeca1f065461fb0024de89421c1809a1b103b55c94e30860"
     },
     {
       "name": "solc-v0.4.0",
       "version": "0.4.0",
-      "keccak256": "0xd0315463e9b911ae05ea70399e6ff93df9e0e3f1b127ed75872569eae34987d2",
+      "keccak256": "0xd13ec91fa7d5893619fbfa253ce56907ac4e55043cb3beffa5c06dc99aee3af5",
       "sha256": "0xe26d188284763684f3cf6d4900b72f7e45a050dd2b2707320273529d033cfd47"
     }
   ],
