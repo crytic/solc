@@ -1,12 +1,6 @@
 {
   "builds": [
     {
-      "name": "solc-v0.4.10",
-      "version": "0.4.10",
-      "keccak256": "0xcc42d9a1fc69a30c31a6e7279d0d7c2fcc2cfab1accf3a347637654d4e5b07e5",
-      "sha256": "0x4a03cdae688434a278b067c8e468f16995f01fc0dcca45b3ab8f7a61ab1788a7"
-    },
-    {
       "name": "solc-v0.4.9",
       "version": "0.4.9",
       "keccak256": "0x2b1c8b5a1835409570edf44549198b2000e6017ee1dc08b1ec747319e885209c",

@@ -40,19 +40,34 @@ function refresh_lists {
     fi
   done
 }
-refresh_lists
+# refresh_lists
 
-function get_expected_sha256 {
+function verify_sha256 {
   arch="$1"
   version="$2"
+  target="$root/$arch/solc-v$version"
+  if [[ ! -f "$target" ]]
+  then
+    echo "File does not exist at $target"
+    exit 1
+  fi
+  actual_sha256="0x$(sha256sum "$target" | cut -d " " -f 1)"
   for list in latest legacy
   do
-    long_version=$(jq '.releases."'"$v"'"' "$list")
+    listfile="$root/$arch/list-$list.json"
+    long_version=$(jq '.releases."'"$version"'"' "$listfile")
+    # echo "long version of name for version=$version arch=$arch is: $long_version"
     if [[ "$long_version" == "null" ]]
     then continue
     else
-      echo "got long version: $long_version"
-      return
+      expected_sha256="$(jq '.builds[] | select(.version=="'"$version"'" ) | .sha256' "$listfile" | tr -d '"')"
+      if [[ "$expected_sha256" != "$actual_sha256" ]]
+      then
+        echo "OH NO, VERY BAD, SHA256 hashes do not match for $target"
+        echo "expected:$expected_sha256 != actual:$actual_sha256"
+        exit 1
+      else return
+      fi
     fi
   done
 }
@@ -60,25 +75,22 @@ function get_expected_sha256 {
 # Install any missing solc binaries from the list of supported versions
 for arch in "${architectures[@]}"
 do
-  for v in "${versions[@]}"
+  for version in "${versions[@]}"
   do
-    echo "Searching/Verifying solc version $v for $arch"
     list="$root/$arch/list.json"
-    target="$root/$arch/solc-v$v"
+    target="$root/$arch/solc-v$version"
     if [[ -f "$target" ]]
     then
-      expected_sha256=$(get_expected_sha256 "$arch" "$v")
-      echo "Target DOES exist for $long_version with expected hash: $expected_sha256"
-    else echo "Target does NOT exist at $target"
+      verify_sha256 "$arch" "$version"
+      echo "$target has a valid sha256 hash"
+    else
+      echo "solc-v$version for $arch is missing, attempting to download it now.."
+      wget -q "$(getUrl "$arch" "$version")" -O "$target"
+      verify_sha256 "$arch" "$version"
+      echo "solc-v$version has been downloaded & its sha256 hash has been validated"
     fi
-    exit # TODO remove after debugging
   done
 done
-
-latest
-legacy
-
-
 
 # 
 # 
