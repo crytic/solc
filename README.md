@@ -2,7 +2,9 @@
 
 This repo contains an archive of historical solidity compilers plus some tools for fetching & verifying them.
 
-The `refresh.sh` script in the project root should be run periodically to keep the lists of available versions up-to-date. Additionally, it will download any new solc binaries that aren't present in this repo yet and verify their checksums.
+The `refresh.sh` script in the project root should be run periodically to keep the lists of available versions up-to-date and to download any new versions that aren't present in this repo yet. SHA256 checksums will be verified for all present solc versions every time `refresh.sh` is run including immediately after downloading a new version.
+
+Additionally, it will download any new solc binaries that aren't present in this repo yet and verify their checksums.
 
 Currently, we support 3 architectures:
 - `linux-amd64`
