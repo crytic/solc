@@ -1,14 +1,19 @@
 #!/bin/env bash
 set -e
 
+########################################
+## Defined Constants
+
 good="✅"
 wip="⏳"
 bad="❌"
 warn="⚠️ "
 
 root=$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
-mapfile -t versions < "$root/versions"
 architectures=( "linux-amd64" "macosx-amd64" "windows-amd64")
+
+########################################
+## Define Helper Functions
 
 # Refresh lists of versions available for each architecture
 function refresh_lists {
@@ -58,7 +63,6 @@ function refresh_lists {
     fi
   done
 }
-refresh_lists
 
 function read_list {
   arch="$1"
@@ -98,17 +102,15 @@ function verify_sha256 {
   fi
 }
 
-function getUrl {
-  arch="$1"
-  version="$2"
-  path="$(read_list "$arch" "$version" "path")"
-  url="https://binaries.soliditylang.org/${arch}/${path}"
-}
+########################################
+## Execute The Stuff
+
+refresh_lists
 
 # Install any missing solc binaries from the list of supported versions
 for arch in "${architectures[@]}"
 do
-  for version in "${versions[@]}"
+  jq -c '.releases | keys' "$root/$arch/list.json" | tr -d '[]"' | tr ',' '\n' | while read -r version
   do
     target="$root/$arch/solc-v$version"
     if [[ -f "$target" ]]
