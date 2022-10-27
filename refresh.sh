@@ -42,7 +42,7 @@ function read_list {
   arch="$1"
   version="$2"
   key="$3"
-  for list in latest legacy
+  for list in legacy latest
   do
     listfile="$root/$arch/list-$list.json"
     if [[ ! -f "$listfile" ]]
