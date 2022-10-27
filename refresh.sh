@@ -1,14 +1,9 @@
-#!/bin/bash
+#!/bin/env bash
+set -e
 
 root=$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
-
-versions="$(cat "$root/versions" | tr '\n' ' ')"
-
-architectures=(
-  "linux-amd64"
-  "macosx-amd64"
-  "windows-amd64"
-)
+mapfile -t versions < "$root/versions"
+architectures=( "linux-amd64" "macosx-amd64" "windows-amd64")
 
 function getUrl {
   arch="$1"
@@ -22,31 +17,68 @@ function getUrl {
 }
 
 # Refresh lists of versions available for each architecture
+function refresh_lists {
+  for arch in "${architectures[@]}"
+  do
+    dir="$root/$arch"
+    if [[ ! -d "$dir" ]]
+    then mkdir -p "$dir"
+    fi
+    list="$dir/list-latest.json"
+    if [[ -f  "$list" ]]
+    then
+      rm -f "$list.backup"
+      mv "$list" "$list.backup"
+    fi
+    url="$(getUrl "$arch")"
+    echo "Fetching updated list of available versions for arch $arch from $url"
+    if wget -q "$url" -O "$list"
+    then rm -f "$list.backup"
+    else
+      echo "Failed to download updated list of available versions for $arch"
+      mv "$list.backup" "$list"
+    fi
+  done
+}
+refresh_lists
+
+function get_expected_sha256 {
+  arch="$1"
+  version="$2"
+  for list in latest legacy
+  do
+    long_version=$(jq '.releases."'"$v"'"' "$list")
+    if [[ "$long_version" == "null" ]]
+    then continue
+    else
+      echo "got long version: $long_version"
+      return
+    fi
+  done
+}
+
+# Install any missing solc binaries from the list of supported versions
 for arch in "${architectures[@]}"
 do
-  dir="$root/$arch"
-  if [[ ! -d "$dir" ]]
-  then mkdir -p "$dir"
-  fi
-
-  list="$dir/list.json"
-  if [[ -f  "$list" ]]
-  then
-    rm -f "$list.backup"
-    mv "$list" "$list.backup"
-  fi
-
-  url="$(getUrl "$arch")"
-  echo "Fetching list for arch $arch from $url"
-  if wget "$url" -O "$list"
-  then rm -f "$list.backup"
-  else
-    echo "Failed to download updated list of available versions for $arch"
-    mv "$list.backup" "$list"
-  fi
+  for v in "${versions[@]}"
+  do
+    echo "Searching/Verifying solc version $v for $arch"
+    list="$root/$arch/list.json"
+    target="$root/$arch/solc-v$v"
+    if [[ -f "$target" ]]
+    then
+      expected_sha256=$(get_expected_sha256 "$arch" "$v")
+      echo "Target DOES exist for $long_version with expected hash: $expected_sha256"
+    else echo "Target does NOT exist at $target"
+    fi
+    exit # TODO remove after debugging
+  done
 done
 
-# if [[ ! -f "
+latest
+legacy
+
+
 
 # 
 # 
