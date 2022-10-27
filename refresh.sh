@@ -45,7 +45,7 @@ function refresh_lists {
         rm -f "$master_list.backup"
         mv "$master_list" "$master_list.backup"
       fi
-      if jq -s '{ builds: [.[1].builds + .[0].builds | unique_by(.version)], releases: [.[0].releases + .[1].releases], latestRelease: .[0].latestRelease }' "$latest_list" "$legacy_list" > "$master_list"
+      if jq -s '{ builds: (.[1].builds + .[0].builds | unique_by(.version)), releases: (.[0].releases + .[1].releases), latestRelease: .[0].latestRelease }' "$latest_list" "$legacy_list" > "$master_list"
       then
         rm -f "$master_list.backup"
       else
@@ -64,19 +64,14 @@ function read_list {
   arch="$1"
   version="$2"
   key="$3"
-  for list in legacy latest
-  do
-    listfile="$root/$arch/list-$list.json"
-    if [[ ! -f "$listfile" ]]
-    then continue # list type doesn't exist for this arch
-    fi
-    if [[ "$(jq '.releases."'"$version"'"' "$listfile")" == "null" ]]
-    then continue # version doesn't exist in this list
-    else
-      jq '.builds[] | select(.version=="'"$version"'" ) | .'"$key" "$listfile" | tr -d '"'
-      break
-    fi
-  done
+  list="$root/$arch/list.json"
+  if [[ ! -f "$list" ]]
+  then echo "$bad no list is present for $arch" && exit 1
+  fi
+  if [[ "$(jq '.releases."'"$version"'"' "$list")" == "null" ]]
+  then echo "$bad no version $version is available for $arch" && exit 1
+  else jq '.builds[] | select(.version=="'"$version"'" ) | .'"$key" "$list" | tr -d '"'
+  fi
 }
 
 function verify_sha256 {
@@ -90,6 +85,11 @@ function verify_sha256 {
   fi
   actual_sha256="0x$(sha256sum "$target" | cut -d " " -f 1)"
   expected_sha256="$(read_list "$arch" "$version" "sha256")"
+  if [[ -z "$expected_sha256" ]]
+  then
+    echo "$bad No expected hash is available for solc-v$version on $arch"
+    exit 1
+  fi
   if [[ "$expected_sha256" != "$actual_sha256" ]]
   then
     echo "$bad OH NO, VERY BAD, SHA256 hashes do not match for $arch solc-v$version"
@@ -110,7 +110,6 @@ for arch in "${architectures[@]}"
 do
   for version in "${versions[@]}"
   do
-    list="$root/$arch/list.json"
     target="$root/$arch/solc-v$version"
     if [[ -f "$target" ]]
     then
