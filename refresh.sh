@@ -1,6 +1,11 @@
 #!/bin/env bash
 set -e
 
+good="✅"
+wip="⏳"
+bad="❌"
+warn="⚠️ "
+
 root=$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
 mapfile -t versions < "$root/versions"
 architectures=( "linux-amd64" "macosx-amd64" "windows-amd64")
@@ -20,11 +25,13 @@ function refresh_lists {
       mv "$list" "$list.backup"
     fi
     url="https://binaries.soliditylang.org/${arch}/list.json"
-    echo "Fetching updated list of available versions for arch $arch from $url"
+    echo "$wip Fetching updated list of available versions for arch $arch from $url"
     if wget -q "$url" -O "$list"
-    then rm -f "$list.backup"
+    then
+      echo "$good Successfully refreshed the solc list for $arch"
+      rm -f "$list.backup"
     else
-      echo "Failed to download updated list of available versions for $arch"
+      echo "$bad Failed to download updated list of available versions for $arch"
       mv "$list.backup" "$list"
     fi
   done
@@ -54,15 +61,15 @@ function verify_sha256 {
   target="$root/$arch/solc-v$version"
   if [[ ! -f "$target" ]]
   then
-    echo "File does not exist at $target"
+    echo "$bad File does not exist at $target"
     exit 1
   fi
   actual_sha256="0x$(sha256sum "$target" | cut -d " " -f 1)"
   expected_sha256="$(read_list "$arch" "$version" "sha256")"
   if [[ "$expected_sha256" != "$actual_sha256" ]]
   then
-    echo "OH NO, VERY BAD, SHA256 hashes do not match for $target"
-    echo "expected:$expected_sha256 != actual:$actual_sha256"
+    echo "$bad OH NO, VERY BAD, SHA256 hashes do not match for $arch solc-v$version"
+    echo "$bad expected:$expected_sha256 != actual:$actual_sha256"
     exit 1
   fi
 }
@@ -81,18 +88,22 @@ do
   do
     list="$root/$arch/list.json"
     target="$root/$arch/solc-v$version"
-    # echo "Checking $target"
     if [[ -f "$target" ]]
     then
       verify_sha256 "$arch" "$version"
-      echo "$target has a valid sha256 hash"
+      echo "$good solc-v$version for $arch is present & its sha256 hash has been validated"
     else
-      echo "solc-v$version for $arch is missing, attempting to download it now.."
       path="$(read_list "$arch" "$version" "path")"
+      if [[ -z "$path" ]]
+      then
+        echo "$warn solc-v$version is not available for $arch"
+        continue
+      fi
+      echo "$wip solc-v$version for $arch is missing, attempting to download it now.."
       url="https://binaries.soliditylang.org/${arch}/${path}"
       wget -q "$url" -O "$target"
       verify_sha256 "$arch" "$version"
-      echo "solc-v$version has been downloaded & its sha256 hash has been validated"
+      echo "$good solc-v$version for $arch was successfully downloaded & its sha256 hash has been validated"
     fi
   done
 done
