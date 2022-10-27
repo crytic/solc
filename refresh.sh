@@ -18,21 +18,43 @@ function refresh_lists {
     if [[ ! -d "$dir" ]]
     then mkdir -p "$dir"
     fi
-    list="$dir/list-latest.json"
-    if [[ -f  "$list" ]]
+    # Download a new latest list from the solc team
+    latest_list="$dir/list-latest.json"
+    if [[ -f  "$latest_list" ]]
     then
-      rm -f "$list.backup"
-      mv "$list" "$list.backup"
+      rm -f "$latest_list.backup"
+      mv "$latest_list" "$latest_list.backup"
     fi
     url="https://binaries.soliditylang.org/${arch}/list.json"
     echo "$wip Fetching updated list of available versions for arch $arch from $url"
-    if wget -q "$url" -O "$list"
+    if wget -q "$url" -O "$latest_list"
     then
       echo "$good Successfully refreshed the solc list for $arch"
-      rm -f "$list.backup"
+      rm -f "$latest_list.backup"
     else
       echo "$bad Failed to download updated list of available versions for $arch"
-      mv "$list.backup" "$list"
+      mv "$latest_list.backup" "$latest_list"
+    fi
+    # Merge latest & legacy lists into one master list
+    legacy_list="$dir/list-legacy.json"
+    master_list="$dir/list.json"
+    if [[ -f "$legacy_list" ]]
+    then
+      if [[ -f "$master_list" ]]
+      then
+        rm -f "$master_list.backup"
+        mv "$master_list" "$master_list.backup"
+      fi
+      if jq -s '{ builds: [.[1].builds + .[0].builds | unique_by(.version)], releases: [.[0].releases + .[1].releases], latestRelease: .[0].latestRelease }' "$latest_list" "$legacy_list" > "$master_list"
+      then
+        rm -f "$master_list.backup"
+      else
+        rm -f "$master_list"
+        mv "$master_list.backup" "$master_list"
+        echo "$bad Failed to merge solc version lists into one master list"
+        exit 1
+      fi
+    else cp -f "$latest_list" "$master_list"
     fi
   done
 }
@@ -50,7 +72,9 @@ function read_list {
     fi
     if [[ "$(jq '.releases."'"$version"'"' "$listfile")" == "null" ]]
     then continue # version doesn't exist in this list
-    else jq '.builds[] | select(.version=="'"$version"'" ) | .'"$key" "$listfile" | tr -d '"'
+    else
+      jq '.builds[] | select(.version=="'"$version"'" ) | .'"$key" "$listfile" | tr -d '"'
+      break
     fi
   done
 }
