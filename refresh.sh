@@ -36,7 +36,7 @@ function refresh_lists {
     fi
   done
 }
-# refresh_lists
+refresh_lists
 
 function read_list {
   arch="$1"
