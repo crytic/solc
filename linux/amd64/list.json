@@ -65,9 +65,16 @@
       "version": "0.4.0",
       "keccak256": "0xd13ec91fa7d5893619fbfa253ce56907ac4e55043cb3beffa5c06dc99aee3af5",
       "sha256": "0xe26d188284763684f3cf6d4900b72f7e45a050dd2b2707320273529d033cfd47"
-    }
+    },
+    {
+      "name": "solc-v0.8.18",
+      "version": "0.8.18",
+      "keccak256": "0x265ad8479d7c5d30ef3556c5c23efddbf1718c1112abd219a6add420489cf930",
+      "sha256": "0xa1c0f33eb4482c26f56719ecf62b0ee05d7d7a4f8264ffbddf9ebcd9095c32bd"
+    }    
   ],
   "releases": {
+    "0.8.18": "solc-v0.8.18",    
     "0.4.10": "solc-v0.4.10",
     "0.4.9": "solc-v0.4.9",
     "0.4.8": "solc-v0.4.8",
